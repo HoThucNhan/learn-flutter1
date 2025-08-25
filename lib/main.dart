@@ -49,6 +49,7 @@ class HomePage extends StatelessWidget {
                 print('You are verified user');
               } else {
                 print('You need to verify your email first');
+                print('check git');
               }
               return Text('Done');
             default:
