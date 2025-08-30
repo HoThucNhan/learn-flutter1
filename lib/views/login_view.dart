@@ -71,6 +71,13 @@ class _LoginViewState extends State<LoginView> {
                               password: password,
                             );
                         print(userCredential);
+                        final user = FirebaseAuth.instance.currentUser;
+                        if (user?.emailVerified ?? false) {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            '/notes/',
+                            (route) => false,
+                          );
+                        }
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'invalid-credential') {
                           print('Email or password is incorrect');
