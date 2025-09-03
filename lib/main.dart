@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learn_flutter1/constants/routes.dart';
 import 'package:learn_flutter1/firebase_options.dart';
 import 'package:learn_flutter1/views/login_view.dart';
 import 'package:learn_flutter1/views/register_view.dart';
@@ -22,11 +23,10 @@ void main() async {
       ),
       home: const HomePage(),
       routes: {
-        '/login/': (context) => const LoginView(),
-        '/register/': (context) => const RegisterView(),
-        'logout/': (context) => const LoginView(),
-        '/notes/': (context) => const NoteView(),
-        '/verify-email/': (context) => const VerifyEmailView(),
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        notesRoute: (context) => const NoteView(),
+        verifyEmailRoute: (context) => const VerifyEmailView(),
       },
     ),
   );
@@ -87,7 +87,7 @@ class _NoteViewState extends State<NoteView> {
                   final shouldLogout = await showLogOutDialog(context);
                   if(shouldLogout) {
                     await FirebaseAuth.instance.signOut();
-                    Navigator.of(context).pushNamedAndRemoveUntil('/login/', (_) => false);
+                    Navigator.of(context).pushNamedAndRemoveUntil(loginRoute, (_) => false);
                   } else {
                     devtools.log('User canceled logout');
                   }

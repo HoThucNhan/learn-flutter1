@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learn_flutter1/constants/routes.dart';
 import 'package:learn_flutter1/firebase_options.dart';
+import 'package:learn_flutter1/utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -65,35 +67,45 @@ class _LoginViewState extends State<LoginView> {
                       final email = _email.text;
                       final password = _password.text;
                       try {
-                        final userCredential = await FirebaseAuth.instance
-                            .signInWithEmailAndPassword(
-                              email: email,
-                              password: password,
-                            );
-                        print(userCredential);
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                          email: email,
+                          password: password,
+                        );
                         final user = FirebaseAuth.instance.currentUser;
                         if (user?.emailVerified ?? false) {
                           Navigator.of(context).pushNamedAndRemoveUntil(
-                            '/notes/',
+                            notesRoute,
+                            (route) => false,
+                          );
+                        } else {
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                            verifyEmailRoute,
                             (route) => false,
                           );
                         }
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'invalid-credential') {
-                          print('Email or password is incorrect');
+                          await showErrorDialog(
+                            context,
+                            'Email or password is incorrect',
+                          );
+                        } else if (e.code == 'invalid-email') {
+                          await showErrorDialog(context, 'invalid-email');
                         } else {
-                          print('Something went wrong: ${e.code}');
-                          print('Error message: ${e.message}');
+                          await showErrorDialog(context, e.toString());
                         }
+                      } catch (e) {
+                        await showErrorDialog(context, e.toString());
                       }
                     },
                     child: const Text('Login'),
                   ),
                   TextButton(
                     onPressed: () {
-                      Navigator.of(
-                        context,
-                      ).pushNamedAndRemoveUntil('/register/', (route) => false);
+                      Navigator.of(context).pushNamedAndRemoveUntil(
+                        registerRoute,
+                        (route) => false,
+                      );
                     },
                     child: const Text('Not registered yet? Register here!'),
                   ),
