@@ -1,10 +1,13 @@
 import 'package:learn_flutter1/service/auth/auth_provider.dart';
 import 'package:learn_flutter1/service/auth/auth_user.dart';
+import 'package:learn_flutter1/service/auth/firebase_auth_provider.dart';
 
 class AuthService implements AuthProvider {
   final AuthProvider provider;
 
   AuthService(this.provider);
+
+  factory AuthService.firebase() => AuthService(FirebaseAuthProvider());
 
   @override
   Future<AuthUser> CreateUser({
@@ -13,7 +16,6 @@ class AuthService implements AuthProvider {
   }) => provider.CreateUser(email: email, password: password);
 
   @override
-  // TODO: implement currentUser
   AuthUser? get currentUser => provider.currentUser;
 
   @override
@@ -25,4 +27,10 @@ class AuthService implements AuthProvider {
 
   @override
   Future<void> sendEmailVerification() => provider.sendEmailVerification();
+
+  @override
+  Future<void> Initialize() => provider.Initialize();
+
+  @override
+  Future<void> reloadUser() => provider.reloadUser();
 }

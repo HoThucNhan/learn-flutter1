@@ -1,4 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth, FirebaseAuthException;
+import 'package:firebase_core/firebase_core.dart';
+import 'package:learn_flutter1/firebase_options.dart';
 import 'package:learn_flutter1/service/auth/auth_exception.dart';
 import 'package:learn_flutter1/service/auth/auth_provider.dart';
 import 'package:learn_flutter1/service/auth/auth_user.dart';
@@ -88,6 +90,23 @@ class FirebaseAuthProvider implements AuthProvider {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       await user.sendEmailVerification();
+    } else {
+      throw UserNotLoggedInAuthException();
+    }
+  }
+
+  @override
+  Future<void> Initialize() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  @override
+  Future<void> reloadUser() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      return user.reload();
     } else {
       throw UserNotLoggedInAuthException();
     }
