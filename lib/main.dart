@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learn_flutter1/constants/routes.dart';
 import 'package:learn_flutter1/service/auth/auth_service.dart';
 import 'package:learn_flutter1/views/login_view.dart';
-import 'package:learn_flutter1/views/notes/new_note_view.dart';
+import 'package:learn_flutter1/views/notes/create_update_note_view.dart';
 import 'package:learn_flutter1/views/notes/notes_view.dart';
 import 'package:learn_flutter1/views/register_view.dart';
 import 'package:learn_flutter1/views/verify_email_view.dart';
@@ -26,7 +26,7 @@ void main() async {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NoteView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
-        newNoteRoute: (context) => const NewNoteView(),
+        createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
       },
     ),
   );
