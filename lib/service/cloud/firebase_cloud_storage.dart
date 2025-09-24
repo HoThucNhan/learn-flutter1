@@ -20,8 +20,18 @@ class FireBaseCloudStorage {
 
   factory FireBaseCloudStorage() => _shared;
 
-  void CreateNewNote({required String ownerUserID}) async {
-    await notes.add({ownerUserIDFieldName: ownerUserID, textFieldName: ''});
+  Future<CloudNote> CreateNewNote({required String ownerUserID}) async {
+    final document = await notes.add({
+      ownerUserIDFieldName: ownerUserID,
+      textFieldName: '',
+    });
+    final fetchNote = await document.get();
+    return CloudNote(
+      documentID: fetchNote.id,
+      ownerUserID: ownerUserID,
+      text: '',
+    );
+
   }
 
   Future<Iterable<CloudNote>> getNotes({required String ownerUserID}) async {
@@ -30,20 +40,24 @@ class FireBaseCloudStorage {
           .where(ownerUserIDFieldName, isEqualTo: ownerUserID)
           .get()
           .then(
-            (value) => value.docs.map((doc) {
-              return CloudNote(
-                documentID: doc.id,
-                ownerUserID: doc.data()[ownerUserIDFieldName] as String,
-                text: doc.data()[textFieldName] as String,
-              );
-            }),
+            (value) => value.docs.map(
+              (doc) => CloudNote.fromSnapshot(doc),
+              //   CloudNote(
+              //   documentID: doc.id,
+              //   ownerUserID: doc.data()[ownerUserIDFieldName] as String,
+              //   text: doc.data()[textFieldName] as String,
+              // ),
+            ),
           );
     } catch (e) {
       throw CouldNotGetAllNotesException();
     }
   }
 
-  Future<void> updateNote({required String documentId, required String text}) async {
+  Future<void> updateNote({
+    required String documentId,
+    required String text,
+  }) async {
     try {
       notes.doc(documentId).update({textFieldName: text});
     } catch (_) {
