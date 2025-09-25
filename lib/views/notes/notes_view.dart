@@ -9,6 +9,7 @@ import 'package:learn_flutter1/service/cloud/firebase_cloud_storage.dart';
 import 'package:learn_flutter1/service/crud/notes_service.dart';
 import 'package:learn_flutter1/utilities/dialogs/logout_dialog.dart';
 import 'package:learn_flutter1/views/notes/notes_list_view.dart';
+import 'package:learn_flutter1/service/theme_controller.dart';
 
 class NoteView extends StatefulWidget {
   const NoteView({super.key});
@@ -36,8 +37,15 @@ class _NoteViewState extends State<NoteView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your Notes'),
+        title: const Text('Your Todos'),
         actions: [
+          IconButton(
+            tooltip: 'Toggle theme',
+            onPressed: () {
+              ThemeController.instance.toggleThemeMode();
+            },
+            icon: const Icon(Icons.brightness_6),
+          ),
           IconButton(
             onPressed: () {
               Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
@@ -83,12 +91,19 @@ class _NoteViewState extends State<NoteView> {
                   notes: allNotes,
                   onDeleteNote: (note) async {
                     await _notesService.deleteNote(documentId: note.documentID);
-                  }, onTap: (note) {
-                  Navigator.of(context).pushNamed(
-                    createOrUpdateNoteRoute,
-                    arguments: note,
-                  );
-                },
+                  },
+                  onTap: (note) {
+                    Navigator.of(context).pushNamed(
+                      createOrUpdateNoteRoute,
+                      arguments: note,
+                    );
+                  },
+                  onToggleDone: (note) async {
+                    await _notesService.updateNote(
+                      documentId: note.documentID,
+                      isDone: !note.isDone,
+                    );
+                  },
                 );
               } else {
                 return const CircularProgressIndicator();

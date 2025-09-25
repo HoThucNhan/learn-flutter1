@@ -24,12 +24,18 @@ class FireBaseCloudStorage {
     final document = await notes.add({
       ownerUserIDFieldName: ownerUserID,
       textFieldName: '',
+      titleFieldName: '',
+      dueDateMsFieldName: null,
+      isDoneFieldName: false,
     });
     final fetchNote = await document.get();
     return CloudNote(
       documentID: fetchNote.id,
       ownerUserID: ownerUserID,
       text: '',
+      title: '',
+      dueDateMs: null,
+      isDone: false,
     );
 
   }
@@ -56,10 +62,19 @@ class FireBaseCloudStorage {
 
   Future<void> updateNote({
     required String documentId,
-    required String text,
+    String? text,
+    String? title,
+    int? dueDateMs,
+    bool? isDone,
   }) async {
     try {
-      notes.doc(documentId).update({textFieldName: text});
+      final Map<String, dynamic> data = {};
+      if (text != null) data[textFieldName] = text;
+      if (title != null) data[titleFieldName] = title;
+      if (dueDateMs != null) data[dueDateMsFieldName] = dueDateMs;
+      if (isDone != null) data[isDoneFieldName] = isDone;
+      if (data.isEmpty) return;
+      await notes.doc(documentId).update(data);
     } catch (_) {
       throw CouldNotUpdateNoteException();
     }

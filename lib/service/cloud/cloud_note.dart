@@ -7,15 +7,24 @@ class CloudNote {
   final String documentID;
   final String ownerUserID;
   final String text;
+  final String title;
+  final int? dueDateMs;
+  final bool isDone;
 
   const CloudNote({
     required this.documentID,
     required this.ownerUserID,
     required this.text,
+    required this.title,
+    required this.dueDateMs,
+    required this.isDone,
   });
 
   CloudNote.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
     : documentID = snapshot.id,
       ownerUserID = snapshot.data()[ownerUserIDFieldName],
-      text = snapshot.data()[textFieldName] as String;
+      text = (snapshot.data()[textFieldName] ?? '') as String,
+      title = (snapshot.data()[titleFieldName] ?? '') as String,
+      dueDateMs = (snapshot.data()[dueDateMsFieldName] as int?),
+      isDone = (snapshot.data()[isDoneFieldName] ?? false) as bool;
 }
