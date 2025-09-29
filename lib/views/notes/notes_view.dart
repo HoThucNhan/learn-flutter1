@@ -6,7 +6,6 @@ import 'dart:developer' as devtools show log;
 import 'package:learn_flutter1/service/auth/auth_service.dart';
 import 'package:learn_flutter1/service/cloud/cloud_note.dart';
 import 'package:learn_flutter1/service/cloud/firebase_cloud_storage.dart';
-import 'package:learn_flutter1/service/crud/notes_service.dart';
 import 'package:learn_flutter1/utilities/dialogs/logout_dialog.dart';
 import 'package:learn_flutter1/views/notes/notes_list_view.dart';
 

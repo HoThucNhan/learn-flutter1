@@ -15,21 +15,23 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   CloudNote? _note;
   late final FireBaseCloudStorage _notesService;
   late final TextEditingController _textController;
+  late final TextEditingController _titleController;
 
   @override
   void initState() {
     _notesService = FireBaseCloudStorage();
     _textController = TextEditingController();
+    _titleController = TextEditingController();
+    _titleController.addListener(_titleControllerListener);
     super.initState();
   }
 
   void _textControllerListener() async {
     final note = _note;
-    if (note == null) {
-      return;
-    }
+    if (note == null) return;
     final text = _textController.text;
-    await _notesService.updateNote(documentId: note.documentID, text: text);
+    final title = _titleController.text;
+    await _notesService.updateNote(documentId: note.documentID, text: text, title: title);
   }
 
   void _setupTextControllerListener() {
@@ -37,14 +39,25 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     _textController.addListener(_textControllerListener);
   }
 
+  void _titleControllerListener() async {
+    final note = _note;
+    if (note == null) return;
+    final title = _titleController.text;
+    await _notesService.updateNote(
+      documentId: note.documentID,
+      title: title,
+      text: _textController.text,
+    );
+  }
+
   Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
     final widgetNote = context.getArgument<CloudNote>();
     if (widgetNote != null) {
       _note = widgetNote;
+      _titleController.text = widgetNote.title;
       _textController.text = widgetNote.text;
       return widgetNote;
     }
-
     final existingNote = _note;
     if (existingNote != null) {
       return existingNote;
@@ -59,7 +72,9 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   void _deleteNoteIfTextIsEmpty() {
     final note = _note;
-    if (note != null && _textController.text.isEmpty) {
+    if (note != null &&
+        _textController.text.isEmpty &&
+        _titleController.text.isEmpty) {
       _notesService.deleteNote(documentId: note.documentID);
     }
   }
@@ -67,8 +82,13 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void _saveNoteIfTextNotEmpty() async {
     final note = _note;
     final text = _textController.text;
-    if (note != null && _textController.text.isNotEmpty) {
-      await _notesService.updateNote(documentId: note.documentID, text: text);
+    final title = _titleController.text;
+    if (note != null && (text.isNotEmpty || title.isNotEmpty)) {
+      await _notesService.updateNote(
+        documentId: note.documentID,
+        title: title,
+        text: text,
+      );
     }
   }
 
@@ -76,6 +96,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void dispose() {
     _deleteNoteIfTextIsEmpty();
     _saveNoteIfTextNotEmpty();
+    _titleController.dispose();
     _textController.dispose();
     super.dispose();
   }
@@ -106,11 +127,28 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _setupTextControllerListener();
-
-              return LayoutBuilder(builder: (context, constraints) {
-                return SingleChildScrollView(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              return Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    color: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    child: TextField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(
+                        hintText: 'Title',
+                        border: InputBorder.none,
+                        hintStyle: TextStyle(color: Colors.white70),
+                      ),
+                      maxLines: 1,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  Expanded(
                     child: CustomPaint(
                       painter: LinedPaperPainter(
                         textStyle: textStyle,
@@ -119,7 +157,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                         lineColor: Colors.white.withOpacity(0.12),
                       ),
                       child: Padding(
-                        padding: EdgeInsets.only(
+                        padding: const EdgeInsets.only(
                           left: 16,
                           right: 16,
                           top: contentPaddingTop,
@@ -139,9 +177,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                       ),
                     ),
                   ),
-                );
-              });
-
+                ],
+              );
             default:
               return const Center(child: CircularProgressIndicator());
           }

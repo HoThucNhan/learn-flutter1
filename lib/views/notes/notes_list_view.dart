@@ -19,16 +19,16 @@ class NotesListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.all(12), // khoảng cách toàn bộ list
+      padding: const EdgeInsets.all(12),
       itemCount: notes.length,
       itemBuilder: (context, index) {
         final note = notes.elementAt(index);
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0), // khoảng cách giữa các note
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.grey[900],               // nền tối để hợp với background đen
-              borderRadius: BorderRadius.circular(12), // bo góc
+              color: Colors.grey[900],
+              borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.3),
@@ -43,12 +43,18 @@ class NotesListView extends StatelessWidget {
               ),
               onTap: () => onTap(note),
               title: Text(
-                note.text,
-                maxLines: 2,
+                note.title.isNotEmpty ? note.title : 'No title',
                 softWrap: true,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(fontSize: 16, color: Colors.white),
+                style: const TextStyle(fontSize: 18, color: Colors.white),
               ),
+              // subtitle: Text(
+              //   note.text,
+              //   maxLines: 2,
+              //   softWrap: true,
+              //   overflow: TextOverflow.ellipsis,
+              //   style: const TextStyle(fontSize: 16, color: Colors.white),
+              // ),
               trailing: IconButton(
                 icon: const Icon(Icons.delete, color: Colors.redAccent),
                 onPressed: () async {
