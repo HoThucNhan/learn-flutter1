@@ -13,14 +13,24 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Verify Email')),
+      appBar: AppBar(title: const Text('Verify Email'), backgroundColor: Colors.black, elevation: 0,),
+      backgroundColor: Colors.black,
       body: Column(
         children: [
+          const SizedBox(height: 50),
           Text(
             "We've sent you an email verification, please check your inbox.",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
           ),
           Text(
             "If you don't see it, please press the button below to send it again.",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
           ),
           TextButton(
             onPressed: () async {

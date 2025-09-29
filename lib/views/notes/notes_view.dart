@@ -37,13 +37,9 @@ class _NoteViewState extends State<NoteView> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Notes'),
+        backgroundColor: Colors.black,
+        elevation: 0,
         actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
-            },
-            icon: const Icon(Icons.add),
-          ),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               switch (value) {
@@ -71,6 +67,7 @@ class _NoteViewState extends State<NoteView> {
           ),
         ],
       ),
+      backgroundColor: Colors.black,
       body: StreamBuilder(
         stream: _notesService.allNote(ownerUserID: userId),
         builder: (context, snapshot) {
@@ -98,6 +95,13 @@ class _NoteViewState extends State<NoteView> {
           }
         },
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed(createOrUpdateNoteRoute);
+        },
+        child: const Icon(Icons.add),
+      ),
+
     );
   }
 }

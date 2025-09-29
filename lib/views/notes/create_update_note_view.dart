@@ -3,7 +3,6 @@ import 'package:learn_flutter1/service/auth/auth_service.dart';
 import 'package:learn_flutter1/utilities/generics/get_arguments.dart';
 import 'package:learn_flutter1/service/cloud/cloud_note.dart';
 import 'package:learn_flutter1/service/cloud/firebase_cloud_storage.dart';
-import 'package:learn_flutter1/service/cloud/cloud_storage_exceptions.dart';
 
 class CreateUpdateNoteView extends StatefulWidget {
   const CreateUpdateNoteView({super.key});
@@ -83,27 +82,129 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
 
   @override
   Widget build(BuildContext context) {
+    const double fontSize = 18.0;
+    const double lineHeightFactor = 1.8;
+    const double contentPaddingTop = 16.0;
+
+    final textScale = MediaQuery.of(context).textScaleFactor;
+    final textStyle = TextStyle(
+      fontSize: fontSize,
+      height: lineHeightFactor,
+      color: Colors.white,
+    );
+
     return Scaffold(
-      appBar: AppBar(title: const Text('New Note')),
+      appBar: AppBar(
+        title: const Text('Note'),
+        backgroundColor: Colors.black,
+        elevation: 0,
+      ),
+      backgroundColor: Colors.black,
       body: FutureBuilder(
         future: createOrGetExistingNote(context),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _setupTextControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  hintText: 'Start typing your note...',
-                ),
-              );
+
+              return LayoutBuilder(builder: (context, constraints) {
+                return SingleChildScrollView(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                    child: CustomPaint(
+                      painter: LinedPaperPainter(
+                        textStyle: textStyle,
+                        textScaleFactor: textScale,
+                        contentPaddingTop: contentPaddingTop,
+                        lineColor: Colors.white.withOpacity(0.12),
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          top: contentPaddingTop,
+                          bottom: 32,
+                        ),
+                        child: TextField(
+                          controller: _textController,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          decoration: const InputDecoration.collapsed(
+                            hintText: 'Start typing your note...',
+                            hintStyle: TextStyle(color: Colors.white54),
+                          ),
+                          style: textStyle,
+                          textAlignVertical: TextAlignVertical.top,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              });
+
             default:
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
           }
         },
       ),
     );
+  }
+}
+
+class LinedPaperPainter extends CustomPainter {
+  final TextStyle textStyle;
+  final double textScaleFactor;
+  final double contentPaddingTop;
+  final Color lineColor;
+
+  LinedPaperPainter({
+    required this.textStyle,
+    required this.textScaleFactor,
+    required this.contentPaddingTop,
+    this.lineColor = const Color.fromARGB(100, 255, 255, 255),
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final tp = TextPainter(
+      text: TextSpan(text: 'Hg', style: textStyle),
+      textDirection: TextDirection.ltr,
+      textScaleFactor: textScaleFactor,
+    );
+
+    tp.layout(minWidth: 0, maxWidth: size.width);
+
+    final metrics = tp.computeLineMetrics();
+    double lineHeight;
+    double ascent;
+
+    if (metrics.isNotEmpty) {
+      lineHeight = metrics[0].height;
+      ascent = metrics[0].ascent;
+    } else {
+      final fz = textStyle.fontSize ?? 16.0;
+      final h = textStyle.height ?? 1.0;
+      lineHeight = fz * h * textScaleFactor;
+      ascent = fz * 0.8 * textScaleFactor;
+    }
+
+    final paint = Paint()
+      ..color = lineColor
+      ..strokeWidth = 1.0;
+
+    double y = contentPaddingTop + ascent;
+
+    while (y < size.height) {
+      canvas.drawLine(Offset(0, y), Offset(size.width, y), paint);
+      y += lineHeight;
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant LinedPaperPainter oldDelegate) {
+    return oldDelegate.textStyle != textStyle ||
+        oldDelegate.textScaleFactor != textScaleFactor ||
+        oldDelegate.contentPaddingTop != contentPaddingTop ||
+        oldDelegate.lineColor != lineColor;
   }
 }
