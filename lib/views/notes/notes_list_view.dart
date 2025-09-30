@@ -49,7 +49,7 @@ class NotesListView extends StatelessWidget {
 }
 
 class ToDoTile extends StatelessWidget {
-  final String title;
+  final String? title;
   final String text;
   final bool isDone;
   final Function(bool?)? onChanged;
@@ -69,7 +69,7 @@ class ToDoTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: InkWell(
         onTap: onTap,
         child: Container(
@@ -84,12 +84,13 @@ class ToDoTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  (title?.trim().isEmpty ?? true) ? 'No Title' : title!,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
                     color: Colors.black,
-                    decoration: isDone ? TextDecoration.lineThrough : null,
                   ),
                 ),
                 Text(
@@ -99,7 +100,6 @@ class ToDoTile extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.black,
-                    decoration: isDone ? TextDecoration.lineThrough : null,
                   ),
                 ),
                 Row(
@@ -127,7 +127,7 @@ class ToDoTile extends StatelessWidget {
                       const SizedBox(width: 10),
                       OutlinedButton(
                         onPressed: onDelete,
-                        style: ElevatedButton.styleFrom(
+                        style: OutlinedButton.styleFrom(
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -137,10 +137,17 @@ class ToDoTile extends StatelessWidget {
                         child: const Text('Delete'),
                       ),
                     ] else ...[
-                      const Icon(
-                        Icons.check_circle,
-                        color: Colors.blue,
-                        size: 20,
+                      IconButton(
+                        onPressed: () {
+                          if (onChanged != null) {
+                            onChanged!(!isDone);
+                          }
+                        },
+                        icon: Icon(
+                          Icons.check_circle,
+                          color: Colors.blue,
+                          size: 24,
+                        ),
                       ),
                     ],
                   ],

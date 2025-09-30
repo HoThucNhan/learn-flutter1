@@ -26,7 +26,29 @@ void main() async {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NoteView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
-        createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
+        // createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == createOrUpdateNoteRoute) {
+          return PageRouteBuilder(
+            opaque: false,
+            barrierColor: Colors.black54,
+            pageBuilder: (context, __, ___) => GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Center(
+                child: IgnorePointer(
+                  ignoring: false,
+                  child: CreateUpdateNoteView(),
+                ),
+              ),
+            ),
+            settings: settings,
+          );
+        }
+        return null;
       },
       builder: (context, child) {
         return Stack(
@@ -37,12 +59,10 @@ void main() async {
               width: double.infinity,
               height: double.infinity,
             ),
-            SafeArea(
-              child: child!,
-            ),
+            SafeArea(child: child!),
           ],
         );
-      }
+      },
     ),
   );
 }
@@ -75,8 +95,3 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
