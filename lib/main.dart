@@ -28,6 +28,21 @@ void main() async {
         verifyEmailRoute: (context) => const VerifyEmailView(),
         createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
       },
+      builder: (context, child) {
+        return Stack(
+          children: [
+            Image.asset(
+              'assets/images/Splash.png',
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
+            ),
+            SafeArea(
+              child: child!,
+            ),
+          ],
+        );
+      }
     ),
   );
 }

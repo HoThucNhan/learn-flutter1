@@ -3,7 +3,6 @@ import 'package:learn_flutter1/service/auth/auth_service.dart';
 import 'package:learn_flutter1/utilities/generics/get_arguments.dart';
 import 'package:learn_flutter1/service/cloud/cloud_note.dart';
 import 'package:learn_flutter1/service/cloud/firebase_cloud_storage.dart';
-import 'package:learn_flutter1/service/cloud/cloud_storage_exceptions.dart';
 
 class CreateUpdateNoteView extends StatefulWidget {
   const CreateUpdateNoteView({super.key});
@@ -15,12 +14,14 @@ class CreateUpdateNoteView extends StatefulWidget {
 class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   CloudNote? _note;
   late final FireBaseCloudStorage _notesService;
+  late final TextEditingController _titleController;
   late final TextEditingController _textController;
 
   @override
   void initState() {
     _notesService = FireBaseCloudStorage();
     _textController = TextEditingController();
+    _titleController = TextEditingController();
     super.initState();
   }
 
@@ -30,7 +31,8 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
       return;
     }
     final text = _textController.text;
-    await _notesService.updateNote(documentId: note.documentID, text: text);
+    final title = _titleController.text;
+    await _notesService.updateNote(documentId: note.documentID, text: text, title: title,);
   }
 
   void _setupTextControllerListener() {
@@ -38,11 +40,17 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     _textController.addListener(_textControllerListener);
   }
 
+  void _setupTitleControllerListener() {
+    _titleController.removeListener(_textControllerListener);
+    _titleController.addListener(_textControllerListener);
+  }
+
   Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
     final widgetNote = context.getArgument<CloudNote>();
     if (widgetNote != null) {
       _note = widgetNote;
       _textController.text = widgetNote.text;
+      _titleController.text = widgetNote.title;
       return widgetNote;
     }
 
@@ -58,9 +66,9 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     }
   }
 
-  void _deleteNoteIfTextIsEmpty() {
+  void _deleteNoteIfTextAndTitleIsEmpty() {
     final note = _note;
-    if (note != null && _textController.text.isEmpty) {
+    if (note != null && _textController.text.isEmpty && _titleController.text.isEmpty) {
       _notesService.deleteNote(documentId: note.documentID);
     }
   }
@@ -68,16 +76,18 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   void _saveNoteIfTextNotEmpty() async {
     final note = _note;
     final text = _textController.text;
-    if (note != null && _textController.text.isNotEmpty) {
-      await _notesService.updateNote(documentId: note.documentID, text: text);
+    final title = _titleController.text;
+    if (note != null && _textController.text.isNotEmpty && _titleController.text.isNotEmpty) {
+      await _notesService.updateNote(documentId: note.documentID, text: text, title: title,);
     }
   }
 
   @override
   void dispose() {
-    _deleteNoteIfTextIsEmpty();
+    _deleteNoteIfTextAndTitleIsEmpty();
     _saveNoteIfTextNotEmpty();
     _textController.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
@@ -91,13 +101,24 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               _setupTextControllerListener();
-              return TextField(
-                controller: _textController,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                decoration: const InputDecoration(
-                  hintText: 'Start typing your note...',
-                ),
+              _setupTitleControllerListener();
+              return Column(
+                children: [
+                  TextField(
+                    controller: _titleController,
+                    decoration: const InputDecoration(
+                      hintText: 'Title',
+                    ),
+                  ),
+                  TextField(
+                    controller: _textController,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    decoration: const InputDecoration(
+                      hintText: 'Start typing your note...',
+                    ),
+                  ),
+                ],
               );
             default:
               return const CircularProgressIndicator();

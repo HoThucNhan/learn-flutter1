@@ -10,12 +10,22 @@ class FirebaseAuthProvider implements AuthProvider {
   Future<AuthUser> CreateUser({
     required String email,
     required String password,
+    required String name,
   }) async {
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      // lay user Firebase gốc để cập nhật displayName
+      final firebaseUser = FirebaseAuth.instance.currentUser;
+      if (firebaseUser != null) {
+        await firebaseUser.updateDisplayName(name);
+        await firebaseUser.reload();
+      }
+
+      // trả về AuthUser qua getter currentUser
       final user = currentUser;
       if (user != null) {
         return user;

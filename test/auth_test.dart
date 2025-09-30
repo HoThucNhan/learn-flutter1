@@ -38,7 +38,7 @@ void main() {
     test('Create user should delegate to login function', () async {
       final badEmailUser = provider.CreateUser(
         email: 'foo@bar.com',
-        password: 'any-password',
+        password: 'any-password', name: 'nhan',
       );
       expect(
         badEmailUser,
@@ -46,13 +46,13 @@ void main() {
       );
       final badPasswordUser = provider.CreateUser(
         email: 'foo@bar.com',
-        password: 'foobar',
+        password: 'foobar', name: 'nhan',
       );
       expect(
         badPasswordUser,
         throwsA(const TypeMatcher<InvalidCredentialAuthException>()),
       );
-      final user = await provider.CreateUser(email: 'foo', password: 'bar');
+      final user = await provider.CreateUser(email: 'foo', password: 'bar', name: 'nhan');
       expect(provider.currentUser, user);
       expect(user.isEmailVerified, false);
     });
@@ -86,6 +86,7 @@ class MockAuthProvider implements AuthProvider {
   Future<AuthUser> CreateUser({
     required String email,
     required String password,
+    required String name,
   }) async {
     if (!isInitialize) throw NotInitializedException();
     await Future.delayed(const Duration(seconds: 1));
@@ -106,7 +107,7 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialize) throw NotInitializedException();
     if (email == 'foo@bar.com') throw InvalidCredentialAuthException();
     if (password == 'foobar') throw InvalidCredentialAuthException();
-    const user = AuthUser(isEmailVerified: false, email: 'foo@bar.com', id: '1',);
+    const user = AuthUser(isEmailVerified: false, email: 'foo@bar.com', id: '1', name: 'nhan',);
     _user = user;
     return Future.value(user);
   }
@@ -130,7 +131,7 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialize) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotLoggedInAuthException();
-    const newUser = AuthUser(isEmailVerified: true, email: 'foo@bar.com', id: '1');
+    const newUser = AuthUser(isEmailVerified: true, email: 'foo@bar.com', id: '1', name: 'nhan');
     _user = newUser;
   }
 }

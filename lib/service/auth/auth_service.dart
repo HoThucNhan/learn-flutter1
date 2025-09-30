@@ -13,7 +13,8 @@ class AuthService implements AuthProvider {
   Future<AuthUser> CreateUser({
     required String email,
     required String password,
-  }) => provider.CreateUser(email: email, password: password);
+    required String name,
+  }) => provider.CreateUser(email: email, password: password, name: name);
 
   @override
   AuthUser? get currentUser => provider.currentUser;
