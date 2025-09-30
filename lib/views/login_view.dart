@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:learn_flutter1/constants/routes.dart';
 import 'package:learn_flutter1/service/auth/auth_exception.dart';
 import 'package:learn_flutter1/service/auth/auth_service.dart';
@@ -73,7 +74,7 @@ class _LoginViewState extends State<LoginView> {
                       enableSuggestions: false,
                       autocorrect: false,
                       keyboardType: TextInputType.emailAddress,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                       ),
@@ -95,7 +96,7 @@ class _LoginViewState extends State<LoginView> {
                       enableSuggestions: false,
                       autocorrect: false,
                       autofillHints: null,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                       ),
@@ -142,7 +143,7 @@ class _LoginViewState extends State<LoginView> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                            backgroundColor: Color(0xFF0177FF),
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -154,8 +155,8 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Text('Login', style: TextStyle(fontSize: 20)),
+                            children: [
+                              const Text('Login', style: TextStyle(fontSize: 20)),
                               Spacer(),
                               Icon(Icons.arrow_forward, size: 25),
                             ],
@@ -178,11 +179,11 @@ class _LoginViewState extends State<LoginView> {
                           child: const Text(
                             'Sign Up',
                             style: TextStyle(
-                              color: Colors.blue,
+                              color: Color(0xFF0177FF),
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
                               decoration: TextDecoration.underline,
-                              decorationColor: Colors.blue,
+                              decorationColor: Color(0xFF0177FF),
                               decorationThickness: 2,
                             ),
                           ),
@@ -193,7 +194,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
               );
             default:
-              return Text('Loading...');
+              return const Text('Loading...');
           }
         },
       ),

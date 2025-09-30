@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:learn_flutter1/service/auth/auth_service.dart';
-import 'package:learn_flutter1/utilities/generics/get_arguments.dart';
 import 'package:learn_flutter1/service/cloud/cloud_note.dart';
 import 'package:learn_flutter1/service/cloud/firebase_cloud_storage.dart';
 
 class CreateUpdateNoteView extends StatefulWidget {
-  const CreateUpdateNoteView({super.key});
+  final CloudNote? note;
+
+  const CreateUpdateNoteView({super.key, this.note});
 
   @override
   State<CreateUpdateNoteView> createState() => _CreateUpdateNoteViewState();
@@ -16,60 +17,29 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
   late final FireBaseCloudStorage _notesService;
   late final TextEditingController _titleController;
   late final TextEditingController _textController;
+  DateTime? _selectedDate;
 
   bool _shouldSave = false;
+  late final bool isNew = widget.note == null;
 
   @override
   void initState() {
     _notesService = FireBaseCloudStorage();
     _textController = TextEditingController();
     _titleController = TextEditingController();
+    _selectedDate = widget.note?.date;
     super.initState();
   }
 
-  void _textControllerListener() async {
-    // final note = _note;
-    // if (note == null) {
-    //   return;
-    // }
-    // final text = _textController.text;
-    // final title = _titleController.text;
-    // await _notesService.updateNote(
-    //   documentId: note.documentID,
-    //   text: text,
-    //   title: title,
-    // );
-  }
-
-  void _setupTextControllerListener() {
-    _textController.removeListener(_textControllerListener);
-    _textController.addListener(_textControllerListener);
-  }
-
-  void _setupTitleControllerListener() {
-    _titleController.removeListener(_textControllerListener);
-    _titleController.addListener(_textControllerListener);
-  }
-
-  Future<CloudNote> createOrGetExistingNote(BuildContext context) async {
-    final widgetNote = context.getArgument<CloudNote>();
+  Future<CloudNote?> createOrGetExistingNote(BuildContext context) async {
+    final widgetNote = widget.note;
     if (widgetNote != null) {
       _note = widgetNote;
       _textController.text = widgetNote.text;
       _titleController.text = widgetNote.title;
       return widgetNote;
     }
-
-    final existingNote = _note;
-    if (existingNote != null) {
-      return existingNote;
-    } else {
-      final currentUser = AuthService.firebase().currentUser!;
-      final userId = currentUser.id;
-      final newNote = await _notesService.CreateNewNote(ownerUserID: userId);
-      _note = newNote;
-      return newNote;
-    }
+    return null;
   }
 
   void _deleteNoteIfTextAndTitleIsEmpty() {
@@ -77,7 +47,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (note != null &&
         _textController.text.isEmpty &&
         _titleController.text.isEmpty) {
-      _notesService.deleteNote(documentId: note.documentID);
+      _notesService.deleteNote(documentId: note.documentId);
     }
   }
 
@@ -88,10 +58,26 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
     if (note != null &&
         (_textController.text.isNotEmpty || _titleController.text.isNotEmpty)) {
       await _notesService.updateNote(
-        documentId: note.documentID,
+        documentId: note.documentId,
         text: text,
         title: title,
+        date: _selectedDate,
       );
+    }
+  }
+
+  Future<void> _pickDate() async {
+    final now = DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? now,
+      firstDate: DateTime(now.year - 5),
+      lastDate: DateTime(now.year + 5),
+    );
+    if (picked != null) {
+      setState(() {
+        _selectedDate = picked;
+      });
     }
   }
 
@@ -113,23 +99,19 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
       builder: (context, snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.done:
-            _setupTextControllerListener();
-            _setupTitleControllerListener();
-            return Material(
-              color: Colors.transparent,
-              child: Center(
-                child: Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  constraints: const BoxConstraints(maxHeight: 500),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
+            return Dialog(
+              backgroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        (_note != null) ? 'Update Task' : 'Create Task',
+                        isNew ? 'Create Task' : 'Update Task',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -149,34 +131,38 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                         keyboardType: TextInputType.multiline,
                         maxLength: 100,
                         maxLines: 5,
+                        textInputAction: TextInputAction.newline,
+                        expands: false,
                         decoration: const InputDecoration(
                           hintText: 'Description (max 100 chars)',
                           border: OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 16),
-
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 1.0,
-                          ),
+                          border: Border.all(color: Colors.grey, width: 1.0),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text('Date of your task'),
+                            Text(
+                              _selectedDate == null
+                                  ? 'No date chosen'
+                                  : '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}',
+                            ),
                             IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.calendar_month),
+                              onPressed: _pickDate,
+                              icon: const Icon(Icons.calendar_month),
                             ),
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -191,18 +177,47 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
                           const SizedBox(width: 8),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
+                              backgroundColor: Color(0xFF0177FF),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               elevation: 0,
                             ),
                             onPressed: () async {
-                              _saveNoteIfTextNotEmpty();
+                              final text = _textController.text;
+                              final title = _titleController.text;
+                              final currentUser = AuthService.firebase().currentUser!;
+                              final userId = currentUser.id;
+
+                              if (isNew) {
+                                // 👉 Tạo mới task với data đầy đủ luôn
+                                if (title.isNotEmpty || text.isNotEmpty) {
+                                  await _notesService.createNewNote(
+                                    ownerUserID: userId,
+                                    title: title,
+                                    text: text,
+                                    date: _selectedDate,
+                                  );
+                                }
+                              } else {
+                                // 👉 Cập nhật task cũ
+                                if (_note != null) {
+                                  await _notesService.updateNote(
+                                    documentId: _note!.documentId,
+                                    title: title,
+                                    text: text,
+                                    date: _selectedDate,
+                                  );
+                                }
+                              }
+
                               Navigator.pop(context);
-                              _shouldSave = true;
                             },
-                            child: const Text('Save', style: TextStyle(color: Colors.white)),
+
+                            child: Text(
+                              isNew ? 'Create' : 'Save',
+                              style: TextStyle(color: Colors.white),
+                            ),
                           ),
                         ],
                       ),
@@ -212,7 +227,7 @@ class _CreateUpdateNoteViewState extends State<CreateUpdateNoteView> {
               ),
             );
           default:
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
         }
       },
     );

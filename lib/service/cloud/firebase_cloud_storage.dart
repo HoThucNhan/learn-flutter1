@@ -10,7 +10,7 @@ class FireBaseCloudStorage {
       notes.snapshots().map(
         (event) => event.docs
             .map((doc) => CloudNote.fromSnapshot(doc))
-            .where((note) => note.ownerUserID == ownerUserID),
+            .where((note) => note.ownerUserId == ownerUserID),
       );
 
   static final FireBaseCloudStorage _shared =
@@ -20,22 +20,23 @@ class FireBaseCloudStorage {
 
   factory FireBaseCloudStorage() => _shared;
 
-  Future<CloudNote> CreateNewNote({required String ownerUserID}) async {
+  Future<CloudNote> createNewNote({
+    required String ownerUserID,
+    String title = '',
+    String text = '',
+    DateTime? date,
+  }) async {
     final document = await notes.add({
       ownerUserIDFieldName: ownerUserID,
+      titleFieldName: title,
+      textFieldName: text,
+      dateFieldName: date,
+      isDoneFieldName: false,
     });
-    final fetchNote = await document.get();
-    return CloudNote(
-      documentID: fetchNote.id,
-      ownerUserID: ownerUserID,
-      text: '',
-      userName: '',
-      dueDate: DateTime.now(),
-      title: '',
-      isDone: false,
-    );
-
+    final fetchedNote = await document.get();
+    return CloudNote.fromDocument(fetchedNote);
   }
+
 
   Future<Iterable<CloudNote>> getNotes({required String ownerUserID}) async {
     try {
@@ -57,6 +58,7 @@ class FireBaseCloudStorage {
     required String? title,
     required String? text,
     bool? isDone,
+    DateTime? date,
   }) async {
     try {
       final updateData = <String, dynamic>{};
@@ -68,6 +70,9 @@ class FireBaseCloudStorage {
       }
       if (isDone != null) {
         updateData[isDoneFieldName] = isDone;
+      }
+      if (date != null) {
+        updateData[dateFieldName] = Timestamp.fromDate(date);
       }
 
       await notes.doc(documentId).update(updateData);

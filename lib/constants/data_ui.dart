@@ -1,0 +1,1 @@
+const double screenHorizontalPadding = 40.0;

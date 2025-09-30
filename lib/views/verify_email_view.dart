@@ -50,23 +50,23 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundColor: Colors.blue,
+              backgroundColor: Color(0xFF0177FF),
               child: Icon(Icons.email, size: 70, color: Colors.white),
             ),
             SizedBox(height: 20),
-            Text(
+            const Text(
               "Verify your email address",
               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 50),
-            Text(
+            const Text(
               "We've sent you an email verification, please check your inbox.",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
               textAlign: TextAlign.center,
             ),
             SizedBox(height: 20),
-            Text(
+            const Text(
               "If you don't see it, please press the button below to send it again.",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
               textAlign: TextAlign.center,
@@ -84,13 +84,13 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                         await AuthService.firebase().sendEmailVerification();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
+                        backgroundColor: Color(0xFF0177FF),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Resend email',
                         style: TextStyle(
                           fontSize: 20,
@@ -117,13 +117,13 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                         const Text(
                           'Back to login',
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: Color(0xFF0177FF),
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                         Spacer(),
-                        Icon(Icons.arrow_forward, size: 25, color: Colors.blue),
+                        Icon(Icons.arrow_forward, size: 25, color: Color(0xFF0177FF)),
                       ],
                     ),
                   ),

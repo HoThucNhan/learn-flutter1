@@ -6,6 +6,7 @@ import 'package:learn_flutter1/views/notes/create_update_note_view.dart';
 import 'package:learn_flutter1/views/notes/notes_view.dart';
 import 'package:learn_flutter1/views/register_view.dart';
 import 'package:learn_flutter1/views/verify_email_view.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,9 +14,10 @@ void main() async {
     MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
+        textTheme: GoogleFonts.jostTextTheme(),
         primarySwatch: Colors.blue,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.blue,
+          backgroundColor: Color(0xFF0177FF),
           foregroundColor: Colors.white,
         ),
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -26,29 +28,7 @@ void main() async {
         registerRoute: (context) => const RegisterView(),
         notesRoute: (context) => const NoteView(),
         verifyEmailRoute: (context) => const VerifyEmailView(),
-        // createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
-      },
-      onGenerateRoute: (settings) {
-        if (settings.name == createOrUpdateNoteRoute) {
-          return PageRouteBuilder(
-            opaque: false,
-            barrierColor: Colors.black54,
-            pageBuilder: (context, __, ___) => GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Center(
-                child: IgnorePointer(
-                  ignoring: false,
-                  child: CreateUpdateNoteView(),
-                ),
-              ),
-            ),
-            settings: settings,
-          );
-        }
-        return null;
+        createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
       },
       builder: (context, child) {
         return Stack(
@@ -59,7 +39,7 @@ void main() async {
               width: double.infinity,
               height: double.infinity,
             ),
-            SafeArea(child: child!),
+            Material(type: MaterialType.transparency, child:child!),
           ],
         );
       },
