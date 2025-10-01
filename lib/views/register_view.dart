@@ -58,23 +58,29 @@ class _RegisterViewState extends State<RegisterView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               return Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(40.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 50),
-                    const Text(
+                    Text(
                       'Name',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.72),
                       ),
                     ),
                     TextField(
                       controller: _name,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Enter your name',
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black.withOpacity(0.41),
+                        ),
                       ),
                       enableSuggestions: false,
                       autocorrect: false,
@@ -84,17 +90,23 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                     const SizedBox(height: 25),
-                    const Text(
+                    Text(
                       'Email',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.72),
                       ),
                     ),
                     TextField(
                       controller: _email,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Enter your email',
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black.withOpacity(0.41),
+                        ),
                       ),
                       enableSuggestions: false,
                       autocorrect: false,
@@ -105,17 +117,23 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                     const SizedBox(height: 25),
-                    const Text(
+                    Text(
                       'Password',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.72),
                       ),
                     ),
                     TextField(
                       controller: _password,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Enter your password',
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black.withOpacity(0.41),
+                        ),
                       ),
                       obscureText: true,
                       enableSuggestions: false,
@@ -127,17 +145,23 @@ class _RegisterViewState extends State<RegisterView> {
                       ),
                     ),
                     const SizedBox(height: 25),
-                    const Text(
+                    Text(
                       'Confirm Password',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.72),
                       ),
                     ),
                     TextField(
                       controller: _confirmPassword,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Confirm your password',
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black.withOpacity(0.41),
+                        ),
                       ),
                       obscureText: true,
                       enableSuggestions: false,
@@ -167,7 +191,10 @@ class _RegisterViewState extends State<RegisterView> {
                               );
                               return;
                             }
-                            if (name.isEmpty || email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+                            if (name.isEmpty ||
+                                email.isEmpty ||
+                                password.isEmpty ||
+                                confirmPassword.isEmpty) {
                               await showErrorDialog(
                                 context,
                                 'All fields must be filled',
@@ -219,7 +246,13 @@ class _RegisterViewState extends State<RegisterView> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text('Sign Up', style: TextStyle(fontSize: 20)),
+                              const Text(
+                                'Sign Up',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
                               Spacer(),
                               Icon(Icons.arrow_forward, size: 25),
                             ],
@@ -231,10 +264,10 @@ class _RegisterViewState extends State<RegisterView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text(
+                        Text(
                           'Already have an account?',
                           style: TextStyle(
-                            color: Colors.black,
+                            color: Colors.black.withOpacity(0.79),
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
                           ),

@@ -169,6 +169,10 @@ class _NoteViewState extends State<NoteView> {
                         decoration: BoxDecoration(
                           color: Color(0xFF0177FF),
                           borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: Colors.black.withOpacity(0.1),
+                            width: 1.5,
+                          ),
                           boxShadow: const [
                             BoxShadow(
                               color: Colors.black26,
@@ -207,11 +211,11 @@ class _NoteViewState extends State<NoteView> {
                                       ),
                                     ),
                                     const SizedBox(width: 6),
-                                    const Text(
+                                    Text(
                                       'Tasks',
                                       style: TextStyle(
                                         fontSize: 16,
-                                        color: Colors.white,
+                                        color: Colors.white.withOpacity(0.72),
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -255,9 +259,8 @@ class _NoteViewState extends State<NoteView> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: BorderSide(
-                                color: selectedFilter == "today"
-                                    ? const Color(0xFF0177FF)
-                                    : Colors.white,
+                                color: Colors.black.withOpacity(0.1),
+                                width: 1.5,
                               ),
                             ),
                             padding: const EdgeInsets.symmetric(
@@ -283,9 +286,8 @@ class _NoteViewState extends State<NoteView> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: BorderSide(
-                                color: selectedFilter == "all"
-                                    ? const Color(0xFF0177FF)
-                                    : Colors.white,
+                                color: Colors.black.withOpacity(0.1),
+                                width: 1.5,
                               ),
                             ),
                             padding: const EdgeInsets.symmetric(
@@ -311,9 +313,8 @@ class _NoteViewState extends State<NoteView> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                               side: BorderSide(
-                                color: selectedFilter == "option"
-                                    ? const Color(0xFF0177FF)
-                                    : Colors.white,
+                                color: Colors.black.withOpacity(0.1),
+                                width: 1.5,
                               ),
                             ),
                             padding: const EdgeInsets.symmetric(

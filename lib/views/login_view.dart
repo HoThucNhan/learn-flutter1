@@ -53,23 +53,29 @@ class _LoginViewState extends State<LoginView> {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               return Padding(
-                padding: const EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(40.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 50),
-                    const Text(
+                    Text(
                       'Email',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.72),
                       ),
                     ),
                     TextField(
                       controller: _email,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Enter your email',
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black.withOpacity(0.41),
+                        ),
                       ),
                       enableSuggestions: false,
                       autocorrect: false,
@@ -80,17 +86,23 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                     const SizedBox(height: 25),
-                    const Text(
+                    Text(
                       'Password',
                       style: TextStyle(
                         fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black.withOpacity(0.72),
                       ),
                     ),
                     TextField(
                       controller: _password,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         hintText: 'Enter your password',
+                        hintStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.black.withOpacity(0.41),
+                        ),
                       ),
                       obscureText: true,
                       enableSuggestions: false,
@@ -156,7 +168,13 @@ class _LoginViewState extends State<LoginView> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Text('Login', style: TextStyle(fontSize: 20)),
+                              const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  color: Colors.white,
+                                ),
+                              ),
                               Spacer(),
                               Icon(Icons.arrow_forward, size: 25),
                             ],
@@ -168,7 +186,11 @@ class _LoginViewState extends State<LoginView> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text('Don\'t have an account?'),
+                        Text('Don\'t have an account?', style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black.withOpacity(0.79),
+                        ),),
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pushNamedAndRemoveUntil(

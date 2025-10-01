@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:learn_flutter1/service/cloud/cloud_note.dart';
 import 'package:learn_flutter1/utilities/dialogs/delete_dialog.dart';
 
@@ -28,7 +29,6 @@ class _NotesListViewState extends State<NotesListView> {
 
   // Tùy chỉnh visuals
   final double _trackWidth = 6.0;
-  final double _trackPadding = 12.0; // khoảng cách ListView so với track
   final double _minThumbHeight = 24.0;
 
   @override
@@ -75,8 +75,10 @@ class _NotesListViewState extends State<NotesListView> {
                   if (!_scrollController.hasClients) return track;
 
                   final maxScroll = _scrollController.position.maxScrollExtent;
-                  final scrollOffset =
-                  _scrollController.position.pixels.clamp(0.0, maxScroll);
+                  final scrollOffset = _scrollController.position.pixels.clamp(
+                    0.0,
+                    maxScroll,
+                  );
 
                   // Tổng chiều cao content
                   final contentHeight = viewHeight + maxScroll;
@@ -87,14 +89,15 @@ class _NotesListViewState extends State<NotesListView> {
                       : (viewHeight / contentHeight);
 
                   // Chiều cao thumb (có min)
-                  final thumbHeight =
-                  math.max(_minThumbHeight, viewHeight * fractionVisible);
+                  final thumbHeight = math.max(
+                    _minThumbHeight,
+                    viewHeight * fractionVisible,
+                  );
 
                   // Vị trí top của thumb (luôn trong giới hạn)
                   final thumbTop = maxScroll <= 0
                       ? 0.0
-                      : (scrollOffset / maxScroll) *
-                      (viewHeight - thumbHeight);
+                      : (scrollOffset / maxScroll) * (viewHeight - thumbHeight);
 
                   return Stack(
                     children: [
@@ -145,7 +148,6 @@ class _NotesListViewState extends State<NotesListView> {
       },
     );
   }
-
 }
 
 class ToDoTile extends StatelessWidget {
@@ -173,12 +175,11 @@ class ToDoTile extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.only(left: 5.0, bottom: 8.0),
         decoration: BoxDecoration(
-          color: isDone ? const Color(0xFF2D9BEE).withOpacity(0.16) : Colors.white,
+          color: isDone
+              ? const Color(0xFF2D9BEE).withOpacity(0.16)
+              : Colors.white,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: Colors.black.withOpacity(0.1),
-            width: 1.5,
-          ),
+          border: Border.all(color: Colors.black.withOpacity(0.1), width: 1.5),
         ),
         child: Padding(
           padding: const EdgeInsets.all(12),
@@ -201,7 +202,9 @@ class ToDoTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 14,
-                  color: isDone ? Colors.black.withOpacity(0.37) : Colors.black.withOpacity(0.6),
+                  color: isDone
+                      ? Colors.black.withOpacity(0.37)
+                      : Colors.black.withOpacity(0.6),
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -221,7 +224,13 @@ class ToDoTile extends StatelessWidget {
                         padding: EdgeInsets.zero,
                         minimumSize: const Size(76, 35),
                       ),
-                      child: const Text('Delete'),
+                      child: Text(
+                        'Delete',
+                        style: TextStyle(
+                          color: Colors.black..withOpacity(0.54),
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton(
@@ -241,7 +250,7 @@ class ToDoTile extends StatelessWidget {
                       ),
                       child: const Text(
                         'Done',
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                       ),
                     ),
                   ] else ...[
@@ -251,10 +260,10 @@ class ToDoTile extends StatelessWidget {
                           onChanged!(!isDone);
                         }
                       },
-                      icon: const Icon(
-                        Icons.check_circle,
-                        color: Color(0xFF0177FF),
-                        size: 24,
+                      icon: SvgPicture.asset(
+                        'assets/icons/checkmark-done-circle.svg',
+                        width: 24,
+                        height: 24,
                       ),
                     ),
                   ],
