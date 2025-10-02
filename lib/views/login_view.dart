@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:learn_flutter1/constants/routes.dart';
 import 'package:learn_flutter1/service/auth/auth_exception.dart';
 import 'package:learn_flutter1/service/auth/auth_service.dart';
@@ -28,6 +27,23 @@ class _LoginViewState extends State<LoginView> {
     _email.dispose();
     _password.dispose();
     super.dispose();
+  }
+
+  InputDecoration _inputDecoration(String hint) {
+    return InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+        color: Colors.black.withOpacity(0.41),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Colors.black.withOpacity(0.41), width: 1.2),
+      ),
+      focusedBorder: const UnderlineInputBorder(
+        borderSide: BorderSide(color: Color(0xFF0177FF), width: 1.5),
+      ),
+    );
   }
 
   @override
@@ -69,18 +85,11 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     TextField(
                       controller: _email,
-                      decoration: InputDecoration(
-                        hintText: 'Enter your email',
-                        hintStyle: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black.withOpacity(0.41),
-                        ),
-                      ),
+                      decoration: _inputDecoration('Enter your email'),
                       enableSuggestions: false,
                       autocorrect: false,
                       keyboardType: TextInputType.emailAddress,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                       ),
@@ -96,19 +105,12 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     TextField(
                       controller: _password,
-                      decoration: InputDecoration(
-                        hintText: 'Enter your password',
-                        hintStyle: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black.withOpacity(0.41),
-                        ),
-                      ),
+                      decoration: _inputDecoration('Enter your password'),
                       obscureText: true,
                       enableSuggestions: false,
                       autocorrect: false,
                       autofillHints: null,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w400,
                       ),
@@ -131,13 +133,13 @@ class _LoginViewState extends State<LoginView> {
                               final user = AuthService.firebase().currentUser;
                               if (user?.isEmailVerified ?? false) {
                                 Navigator.of(context).pushNamedAndRemoveUntil(
-                                  notesRoute,
-                                  (route) => false,
+                                  mainPageRoute,
+                                      (route) => false,
                                 );
                               } else {
                                 Navigator.of(context).pushNamedAndRemoveUntil(
                                   verifyEmailRoute,
-                                  (route) => false,
+                                      (route) => false,
                                 );
                               }
                             } on InvalidCredentialAuthException {
@@ -155,7 +157,7 @@ class _LoginViewState extends State<LoginView> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color(0xFF0177FF),
+                            backgroundColor: const Color(0xFF0177FF),
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
@@ -167,8 +169,8 @@ class _LoginViewState extends State<LoginView> {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
+                            children: const [
+                              Text(
                                 'Login',
                                 style: TextStyle(
                                   fontSize: 20,
@@ -182,20 +184,23 @@ class _LoginViewState extends State<LoginView> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Don\'t have an account?', style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black.withOpacity(0.79),
-                        ),),
+                        Text(
+                          'Don\'t have an account?',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black.withOpacity(0.79),
+                          ),
+                        ),
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pushNamedAndRemoveUntil(
                               registerRoute,
-                              (route) => false,
+                                  (route) => false,
                             );
                           },
                           child: const Text(

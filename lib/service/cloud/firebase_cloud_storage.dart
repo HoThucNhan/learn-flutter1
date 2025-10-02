@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:learn_flutter1/service/cloud/cloud_note.dart';
+import 'package:learn_flutter1/service/cloud/cloud_task.dart';
 import 'package:learn_flutter1/service/cloud/cloud_storage_constants.dart';
 import 'package:learn_flutter1/service/cloud/cloud_storage_exceptions.dart';
 
 class FireBaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection('notes');
 
-  Stream<Iterable<CloudNote>> allNote({required String ownerUserID}) =>
+  Stream<Iterable<CloudTask>> allNote({required String ownerUserID}) =>
       notes.snapshots().map(
         (event) => event.docs
-            .map((doc) => CloudNote.fromSnapshot(doc))
+            .map((doc) => CloudTask.fromSnapshot(doc))
             .where((note) => note.ownerUserId == ownerUserID),
       );
 
@@ -20,32 +20,35 @@ class FireBaseCloudStorage {
 
   factory FireBaseCloudStorage() => _shared;
 
-  Future<CloudNote> createNewNote({
+  Future<CloudTask> createNewNote({
     required String ownerUserID,
     String title = '',
     String text = '',
     DateTime? date,
+    String taskGroup = 'General',
   }) async {
     final document = await notes.add({
       ownerUserIDFieldName: ownerUserID,
       titleFieldName: title,
       textFieldName: text,
       dateFieldName: date,
+      taskGroupFieldName: taskGroup,
       isDoneFieldName: false,
+      nameFieldName: 'User Name',
     });
     final fetchedNote = await document.get();
-    return CloudNote.fromDocument(fetchedNote);
+    return CloudTask.fromDocument(fetchedNote);
   }
 
 
-  Future<Iterable<CloudNote>> getNotes({required String ownerUserID}) async {
+  Future<Iterable<CloudTask>> getNotes({required String ownerUserID}) async {
     try {
       return await notes
           .where(ownerUserIDFieldName, isEqualTo: ownerUserID)
           .get()
           .then(
             (value) => value.docs.map(
-              (doc) => CloudNote.fromSnapshot(doc),
+              (doc) => CloudTask.fromSnapshot(doc),
             ),
           );
     } catch (e) {
@@ -59,6 +62,7 @@ class FireBaseCloudStorage {
     required String? text,
     bool? isDone,
     DateTime? date,
+    String? taskGroup,
   }) async {
     try {
       final updateData = <String, dynamic>{};
@@ -73,6 +77,10 @@ class FireBaseCloudStorage {
       }
       if (date != null) {
         updateData[dateFieldName] = Timestamp.fromDate(date);
+      }
+
+      if (taskGroup != null) {
+        updateData[taskGroupFieldName] = taskGroup;
       }
 
       await notes.doc(documentId).update(updateData);

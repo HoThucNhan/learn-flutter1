@@ -4,3 +4,4 @@ const nameFieldName = 'name';
 const dateFieldName = 'dueDate';
 const titleFieldName = 'title';
 const isDoneFieldName = 'isDone';
+const taskGroupFieldName = 'taskGroup';
